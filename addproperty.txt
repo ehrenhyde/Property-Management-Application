@@ -1,0 +1,29 @@
+CREATE DEFINER=`root`@`localhost` PROCEDURE `create_property` (in address varchar(150), in description varchar(250), in ownerId int(11), in isWHouse tinyint(2), in numRooms int(11), in defaultRent int(11), in defaultPeriod int(11))
+
+IF (isWHouse = 1) THEN
+	BEGIN
+    start transaction;
+		insert into w_house(wHouse,numRooms,defaultRent,defaultPeriod)
+        values(NULL,numRooms,defaultRent,defaultPeriod);
+        
+		Set @wHouse = last_insert_id();
+        
+        insert into property(propertyId,sHouseId,wHouseId,address,description,ownerId)
+		values(NULL,0,@wHouse,address,description,ownerId);
+
+	commit;
+	END;
+ELSE 
+	BEGIN
+    start transaction;
+		insert into s_house(sHouse)
+        values(NULL);
+        
+        Set @sHouse = last_insert_id();
+        
+        insert into property(propertyId,sHouseId,wHouseId,address,description,ownerId)
+		values(NULL,@sHouse,0,address,description,ownerId);
+	
+    commit;        
+	END;
+END;
