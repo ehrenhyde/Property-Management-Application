@@ -9,28 +9,31 @@
 <body>
 
 <?php
-include('topNav.php');
-mysql_connect("localhost","admin","admin");//database connection
-
-mysql_select_db("prop");
+include('includes/content/topNav.php');
+include ('/includes/functions/db.php');
+$pdo=db_connect();
 
 $id=(isset($_GET["data"])) ? (int)$_GET["data"] : 1;
 
-$sql="SELECT * FROM v_w_house_property_details WHERE `propertyId` = '$id' LIMIT 1";
+$stmt = $pdo->prepare(
+						"SELECT * FROM v_w_house_property_details WHERE propertyId = '.$id.'");					
+		
+	$stmt->execute();
+		
+		
+	$result = $stmt->fetch(PDO::FETCH_OBJ);
+	
 
-$result = mysql_query($sql);  
-$data = mysql_fetch_row($result)
+
 
 ?>
 <table>
-<?php echo("<tr><td>Picture</td></tr><tr><td>$data[4]</td></tr><tr><td>$data[5]</td></tr><tr><td>$data[1]</td></tr><tr><td>$data[6]</td></tr>") ?>
+<?php 
+echo("<tr><td>Picture</td></tr><tr><td>$result->Address</td></tr><tr><td>$result->NumberofRooms</td></tr><tr><td>$result->BuyingPrice</td></tr><tr><td>$result->Description</td></tr>"); 
 
 
+?>
 </table>
-
-
-
-
 
 </body>
 
