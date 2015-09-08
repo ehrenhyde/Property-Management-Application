@@ -1,0 +1,15 @@
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `v_best_property_pic` AS
+    SELECT 
+        `pp`.`propertyId` AS `propertyId`, `pp`.`image` AS `image`
+    FROM
+        `property_pic` `pp`
+    WHERE
+        `pp`.`propertyPicId` IN (SELECT 
+                MAX(`property_pic`.`propertyPicId`)
+            FROM
+                `property_pic`
+            GROUP BY `property_pic`.`propertyId`)

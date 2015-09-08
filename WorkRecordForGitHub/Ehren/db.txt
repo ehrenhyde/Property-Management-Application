@@ -1,0 +1,239 @@
+<?php 
+
+/*I did about 65% of this*/
+
+function db_connect(){
+	$pdo = null;
+	try{
+		$pdo = new PDO('mysql:host=localhost;dbname=prop','admin','admin');
+		$pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+	}catch(Exception $e){
+		 echo 'Connection failed: ' . $e->getMessage()."\n";
+	}
+	return $pdo;
+}
+
+function db_addTenant($email,$password,$firstName,$lastName,$DOB,$isMale){
+	try{
+		$pdo = db_connect();
+		$stmt = $pdo->prepare(		
+					'call create_tenant_login_details(:email,:password,:firstName,:lastName,:DOB,:isMale);'
+				);
+		
+		$stmt->bindValue(':email',$email);
+		$stmt->bindValue(':password',$password);
+		$stmt->bindValue(':firstName',$firstName);
+		$stmt->bindValue(':lastName',$lastName);
+		$stmt->bindValue(':DOB',$DOB);
+		$stmt->bindValue(':isMale',$isMale);
+		
+		$stmt->execute();
+		
+	}catch(PDOException $e){
+		echo 'exception: db_addTenant';
+		echo $e->getMessage();
+	}
+}
+
+function db_isValidCred($email,$password){
+	try{
+		$pdo = db_connect();
+		
+		$stmt = $pdo->prepare('select isValidCred(:email,:password)');
+		
+		$stmt->bindValue(':email',$email);
+		$stmt->bindValue(':password',$password);
+		
+		$stmt->execute();
+		
+		$resultArray = $stmt->fetch();	
+		$resultVal = $resultArray[0];
+		return $resultVal;
+	}catch(PDOException $e){
+		$e->getMessage();
+	}
+}
+
+function db_getIdLogin($email){
+	try{
+		$pdo = db_connect();
+		
+		$stmt = $pdo->prepare('select getLoginId(:email)');
+		
+		$stmt->bindValue(':email',$email);
+		
+		$stmt->execute();
+		
+		
+		$resultArray = $stmt->fetch();
+		
+		$resultVal = $resultArray[0];
+		
+		return $resultVal;
+	}catch(PDOException $e){
+		$e->getMessage();
+	}
+}
+
+function db_updateTenant($loginId,$email,$password,$firstName,$lastName,$DOB,$isMale){
+	try{
+		$pdo = db_connect();
+		$stmt = $pdo->prepare(		
+					'call update_tenant(:loginId,:email,:password,:firstName,:lastName,:DOB,:isMale);'
+				);
+		
+		$stmt->bindValue(':loginId',$loginId);
+		$stmt->bindValue(':email',$email);
+		$stmt->bindValue(':password',$password);
+		$stmt->bindValue(':firstName',$firstName);
+		$stmt->bindValue(':lastName',$lastName);
+		$stmt->bindValue(':DOB',$DOB);
+		$stmt->bindValue(':isMale',$isMale);
+		
+		$stmt->execute();
+		
+	}catch(PDOException $e){
+		$e->getMessage();
+	}
+}
+
+function db_getTenantDetails($loginId){
+	$pdo = db_connect();
+	try{
+		
+		
+		$stmt = $pdo->prepare(
+						'select * from v_tenant_details '.
+						'where loginId = :loginId'
+						);
+		
+		$stmt->bindValue(':loginId',$loginId);
+		
+		$stmt->execute();
+		
+		$resultArray = $stmt->fetch();
+		
+		return $resultArray;
+	}catch(PDOException $e){
+		$e->getMessage(); 
+	}
+}
+
+function db_getWHouseDetails($propertyId){
+	$pdo= db_connect();
+	$stmt = $pdo->prepare(
+						'select * from v_w_house_properties '.
+						'where propertyId = :propertyId'
+						);
+		
+	$stmt->bindValue(':propertyId',$propertyId);
+		
+	$stmt->execute();
+		
+	$resultArray = $stmt->fetch();
+		
+	return $resultArray;
+}
+
+function db_update_w_house($propertyId,$address,$description,/*$ownerId,*/$numRooms,$defaultRent,$defaultPeriod,$buyingPrice){
+	try{
+		$pdo = db_connect();
+		$stmt = $pdo->prepare(		
+					'call update_w_house (:propertyId,:address,:description,:numRooms,:defaultRent,:defaultPeriod,:buyingPrice);'
+				);
+
+		
+		$stmt->bindValue(':propertyId',$propertyId);
+		$stmt->bindValue(':address',$address);
+		$stmt->bindValue(':description',$description);
+		//$stmt->bindValue(':ownerId',$ownerId);
+		$stmt->bindValue(':numRooms',$numRooms);
+		$stmt->bindValue(':defaultRent',$defaultRent);
+		$stmt->bindValue(':defaultPeriod',$defaultPeriod);
+		$stmt->bindValue(':buyingPrice',$buyingPrice);
+		
+		$stmt->execute();
+		
+	}catch(PDOException $e){
+		$e->getMessage();
+	}							
+}
+
+function db_getPropertyPic($loginId){
+	$pdo = db_connect();
+	try{
+		
+		
+		$stmt = $pdo->prepare(
+						'select * from propertypic '.
+						'where loginId = :loginId'
+						);
+		
+		$stmt->bindValue(':loginId',$loginId);
+		
+		$stmt->execute();
+		
+		$resultArray = $stmt->fetch();
+		
+		return $resultArray;
+	}catch(PDOException $e){
+		$e->getMessage(); 
+	}
+}
+
+
+function db_addProperty($numOfRooms,$defaultRent,$defaultPeriod,$buyingPrice,$description,$address){
+	try{
+		$pdo = db_connect();
+		$stmt = $pdo->prepare(		
+					'call add_property(:numOfRooms,:defaultRent,:defaultPeriod,:buyingPrice,:address,:description);'
+				);
+		
+		$stmt->bindValue(':numOfRooms',$numOfRooms);
+		$stmt->bindValue(':defaultRent',$defaultRent);
+		$stmt->bindValue(':defaultPeriod',$defaultPeriod);
+		$stmt->bindValue(':buyingPrice',$buyingPrice);
+		$stmt->bindValue(':address',$address);
+		$stmt->bindValue(':description',$description);
+		
+		$stmt->execute();
+		
+	}catch(PDOException $e){
+		echo 'exception: db_addProperty';
+		echo $e->getMessage();
+	}
+}
+?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

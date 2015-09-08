@@ -1,0 +1,11 @@
+CREATE DEFINER=`root`@`localhost` FUNCTION `isValidCred`(pEmail VARCHAR(45), pPassword VARCHAR(45)) RETURNS int(11)
+BEGIN
+	
+DECLARE isValid INTEGER;
+
+SET isValid = (SELECT count(*) > 0 as isValid
+				FROM Login
+				WHERE email = email
+				AND password = pPassword);
+RETURN isValid;
+END
