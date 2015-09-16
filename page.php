@@ -1,7 +1,3 @@
-<!--Created and Modified By Lucas and Michael.
-Michael: Modification of the forms and tables with controlled CSS
-Lucas: Created all forms, tables and in general foundation of page with html, PHP and MySql
-    -->
 <html lang="en">
 
 <head>
@@ -25,7 +21,7 @@ Lucas: Created all forms, tables and in general foundation of page with html, PH
 		include('includes/functions/db.php');
 
 		$pdo=db_connect();
-
+		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		$id=(isset($_GET["data"])) ? (int)$_GET["data"] : 1;
 
 		$stmt = $pdo->prepare(
@@ -34,18 +30,30 @@ Lucas: Created all forms, tables and in general foundation of page with html, PH
 								);					
 		
 			$stmt->execute();
-				
+			$stmt->setFetchMode(PDO::FETCH_ASSOC);
 			$result = $stmt->fetch();
+
+			
     echo '<div id=content>';
 		
+		
+		//header('Content-Type: image/jpeg');    
+		
+		//$result["image"] = base64_decode($result["image"]);
+		//echo $result["image"];
 		echo '<div id=Address>'.$result["Address"].'</div>';
-		echo "<div id=Picture>Insert Picture Here</div>";
+		?>
+		<div id=Picture><img src="data:image/jpeg;base64,<?php echo base64_encode( $result["image"] ); ?>" /></div>
+		<?php
+		
 		echo '<div id=RoomNum>Number of rooms: '. $result["NumberofRooms"].'</div>';
 		echo '<div id=Price>Buying Price: $'. $result["BuyingPrice"].'</div>';
 		echo '<div id=Description>Description: '.$result["Description"].'</div>';
+		echo '</div>';
+		?>
 
-	echo '</div>';
-	?>
+	
+
 
 
 
