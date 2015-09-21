@@ -53,7 +53,7 @@ $loginId = $_SESSION['idLogin'];
 			
 			<tr><td>Number of Bathrooms</td><td><?php ctrl_select($errors,'numberofBaths',$baths,'','');?></td></tr>
 			
-			<tr><td>Number of Carparks</td><td><?php ctrl_select($errors,'numberofCarparks',$carParks,'','');?></td></tr>
+			<tr><td>Number of Carparks</td><td><?php ctrl_select($errors,'numberOfCarParks',$carParks,'','');?></td></tr>
 			
 			<tr><td>DefaultRent</td><td><?php ctrl_input_field($errors,'number','REQUIRED','defaultRent','','');?></td></tr>
 	
@@ -63,14 +63,9 @@ $loginId = $_SESSION['idLogin'];
 			
 			<tr><td>Image</td><td><?php ctrl_input_field($errors,'file','REQUIRED','userfile','','');?></td></tr>			
 			
-			  <?php
-			if(isset($_FILES['userfile']))
-			{
-				uploadimage(); 
-			}  
-  ?>
+			 
 
-			<tr><td><?php ctrl_submit('Save'); ?> </td></tr>
+			<tr><td></td><td><div align="right"><button class="btn btn-sm btn-primary" type="submit" value=" Send" id="submit" >Save</button></div> <br><?php ctrl_submit('Save'); ?></td></tr>
 
 		
 		</tbody>
@@ -90,6 +85,8 @@ if (isset($_POST['submit'])){
 		// echo "The number of rooms is *". $_POST['description'].'*';
 		db_addProperty(
 						$_POST['numOfRooms'],
+						$_POST['numberofBaths'],
+						$_POST['numberOfCarParks'],
 						$_POST['defaultRent'],
 						$_POST['defaultPeriod'],
 						$_POST['buyingPrice'],
@@ -98,8 +95,7 @@ if (isset($_POST['submit'])){
 						$_POST['suburb'],
 						$_POST['state'],
 						$_POST['postcode'],
-						$_POST['numberofCarparks'],
-						$_POST['numberofBaths']										
+						$_FILES['userfile']
 						);
   
   
