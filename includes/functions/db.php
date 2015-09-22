@@ -33,6 +33,7 @@ function db_addTenant($email,$password,$firstName,$lastName,$DOB,$isMale){
 	}
 }
 
+<<<<<<< HEAD
 function db_addOwner($email,$password,$firstName,$lastName,$DOB,$isMale){
 	try{
 		$pdo = db_connect();
@@ -55,6 +56,8 @@ function db_addOwner($email,$password,$firstName,$lastName,$DOB,$isMale){
 	}
 }
 
+=======
+>>>>>>> origin/master
 function db_isValidCred($email,$password){
 	try{
 		$pdo = db_connect();
@@ -99,6 +102,7 @@ function db_updateTenant($loginId,$email,$password,$firstName,$lastName,$DOB,$is
 	try{
 		$pdo = db_connect();
 		$stmt = $pdo->prepare(		
+<<<<<<< HEAD
 					'call update_tenant(:loginId,:email,:password,:firstName,:lastName,:DOB,:isMale);'
 				);
 		
@@ -122,6 +126,9 @@ function db_updateOwner($loginId,$email,$password,$firstName,$lastName,$DOB,$isM
 		$pdo = db_connect();
 		$stmt = $pdo->prepare(		
 					'call update_owner(:loginId,:email,:password,:firstName,:lastName,:DOB,:isMale);'
+=======
+					'call updateTenant(:loginId,:email,:password,:firstName,:lastName,:DOB,:isMale);'
+>>>>>>> origin/master
 				);
 		
 		$stmt->bindValue(':loginId',$loginId);
@@ -160,6 +167,7 @@ function db_getTenantDetails($loginId){
 		$e->getMessage(); 
 	}
 }
+<<<<<<< HEAD
 
 function db_getOwnerDetails($loginId){
 	$pdo = db_connect();
@@ -555,6 +563,8 @@ return array("mime" => $mime,
 } 
 
 
+=======
+>>>>>>> origin/master
 ?>
 
 

@@ -32,6 +32,7 @@ if (isset($_POST['submit'])){
 	}	
 }
 ?>
+<<<<<<< HEAD
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -71,6 +72,29 @@ $genderLabels = array('Male','Female');?>
 <tr><td><?php ctrl_submit('Save'); ?></td></tr>
 </tbody>
 </table>
+=======
+<html>
+<title>Register Tenant</title>
+<head>
+<link rel='stylesheet' href = 'css/global.css' type = 'text/css'/>
+<link rel='stylesheet' href = 'css/registerTenant.css' type = 'text/css'/>
+</head>
+<body>
+<?php include('/includes/content/topNav.php'); ?>
+<form class= 'regForm' action = "register.php" method = "POST" name = "registerTenantAccount">
+<?php
+	
+ctrl_input_field($errors,'text','REQUIRED','email','Your Email','txtEmail');
+ctrl_input_field($errors, 'text','REQUIRED','password','New Password','txtPassword');
+ctrl_input_field($errors,'text','REQUIRED','firstName','First Name','txtFirstName');
+ctrl_input_field($errors,'text','OPTIONAL','lastName','Last Name','txtLastName');
+ctrl_input_field($errors,'date','OPTIONAL','DOB','Date of Birth','dtpDOB');	
+$genderValues = array('male','female');
+$genderLabels = array('Male','Female');
+ctrl_input_radio($errors,'gender',$genderValues,$genderLabels,'classNameNotImplemented','male');
+ctrl_submit('Register');
+?>
+>>>>>>> origin/master
 </form>
 </body>
 </html>

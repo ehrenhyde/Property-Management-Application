@@ -1,6 +1,7 @@
 <form class= 'loginForm' action = "login.php" method = "POST" name = "login">
 <?php
 
+<<<<<<< HEAD
 	require 'includes/functions/formControls.php'; ?>
 	<table class="table">
 
@@ -13,4 +14,11 @@
 			
 	</table>
 	
+=======
+	require 'includes/functions/formControls.php';
+	ctrl_input_field($errors,'text','REQUIRED','email','Username (Email)', 'txtInput');
+	ctrl_input_field($errors,'password','REQUIRED','password','Password','txtInput');
+	ctrl_submit('Login');
+?>
+>>>>>>> origin/master
 </form>

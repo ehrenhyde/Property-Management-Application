@@ -34,6 +34,7 @@ if (isset($_POST['submit'])){
 	}	
 }
 ?>
+<<<<<<< HEAD
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -57,6 +58,16 @@ if (isset($_POST['submit'])){
 		</div>
 	<div class="panel-body">
 <?php include('/includes/content/topNav.php'); ?>
+=======
+<html>
+<title>Tenant Profile</title>
+<head>
+<link rel='stylesheet' href = 'css/global.css' type = 'text/css'/>
+<link rel='stylesheet' href = 'css/tenantProfile.css' type = 'text/css'/>
+</head>
+<body>
+<?php include('/includes/content/topNav.php'); ?>
+>>>>>>> origin/master
 <form class= 'editForm' action = "tenantProfile.php" method = "POST" name = "updateTenantAccount">
 <?php
 
@@ -67,6 +78,7 @@ if ($tenantDetails['isMale'] == "1"){
 	$selectedGender = 'male';
 }else{
 	$selectedGender = 'female';
+<<<<<<< HEAD
 }?>
 <table class="table">
 
@@ -83,6 +95,20 @@ $genderLabels = array('Male','Female');?>
 <tr><td><?php ctrl_submit('Save'); ?></td></tr>
 </tbody>
 </table>
+=======
+}
+	
+ctrl_input_field($errors,'text','REQUIRED','email','Your Email','txtEmail',$tenantDetails['email']);
+ctrl_input_field($errors, 'text','REQUIRED','password','New Password','txtPassword',$tenantDetails['password']);
+ctrl_input_field($errors,'text','REQUIRED','firstName','First Name','txtFirstName',$tenantDetails['firstName']);
+ctrl_input_field($errors,'text','OPTIONAL','lastName','Last Name','txtLastName',$tenantDetails['lastName']);
+ctrl_input_field($errors,'date','OPTIONAL','DOB','Date of Birth','dtpDOB',$tenantDetails['DOB']);	
+$genderValues = array('male','female');
+$genderLabels = array('Male','Female');
+ctrl_input_radio($errors,'gender',$genderValues,$genderLabels,'classNameNotImplemented',$selectedGender);
+ctrl_submit('Save');
+?>
+>>>>>>> origin/master
 </form>
 </body>
 </html>

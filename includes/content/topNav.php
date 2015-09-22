@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php include('includes/checkAccountType.php') ?>
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -24,3 +25,11 @@
 		</div>
 	</div>
 </nav>
+=======
+<div id='topNav'>
+	<a href='searchProperties.php'>Search Properties</a>
+	<a href='registerTenant.php'>Register Tenant</a>
+	<a href='tenantProfile.php'>Edit My Tenant Profile</a>
+	<a href='login.php'>Login</a>
+</div>
+>>>>>>> origin/master

@@ -1,6 +1,7 @@
 <?php include('includes/accountSessions.php') ?>
 <?php include('includes/functions/db.php') ?>
 
+<<<<<<< HEAD
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -24,6 +25,15 @@
 		</div>
 	<div class="panel-body">
 <body>
+=======
+<html>
+<head>
+	<title>Login</title>
+	<link rel='stylesheet' href='css/global.css' type='text/css'/>
+	<link rel='stylesheet' href='css/login.css' type='text/css'/>
+</head>
+<body>
+>>>>>>> origin/master
 <?php include('includes/content/topNav.php'); ?>
 
 <?php

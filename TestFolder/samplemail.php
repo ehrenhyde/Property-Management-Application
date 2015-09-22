@@ -16,7 +16,11 @@ if(isset($_POST['submit']))
     form@my-web-site.com is good.
     */
 
+<<<<<<< HEAD
 	$from_add = "lucas.nielsen@connect.qut.edu.au"; 
+=======
+	$from_add = "lucas.nielsen459@gmail.com"; 
+>>>>>>> origin/master
 
 	$to_add = "lucas.nielsen459@gmail.com"; //<-- put your yahoo/gmail email address here
 
