@@ -1,15 +1,19 @@
 <?php
+/*enable calling database access functions*/
 include ('includes/functions/db.php');
+/*makes building forms easier*/
 include ('includes/functions/formControls.php');
-
+/*Utilse the user's login sesion*/
 include ('includes/accountSessions.php');
 
 $errors = array();
 
+/*Only try to insert if the page is being posted to*/
 if (isset($_POST['submit'])){
 	
 	require 'includes/functions/validate.php';
 	
+	/*Check the field values are legitmate*/
 	validateEmail($errors,$_POST,'email');
 	validateText($errors, $_POST,'firstName');
 	validateText($errors, $_POST,'lastName');
@@ -18,12 +22,15 @@ if (isset($_POST['submit'])){
 	
 	if (!$errors){
 		
+		/*get a bool value of gender*/
 		$isMale = NULL;
 		if (isset ($_POST['gender']) && $_POST['gender'] = 'male'){
 			$isMale = true;		
 		} else {
 			$isMale = false;
 		}
+		
+		/*insert into the db*/
 		db_addTenant($_POST['email'],$_POST['password'],$_POST['firstName'],$_POST['lastName'],$_POST['DOB'],$isMale);
 		
 		
@@ -32,6 +39,7 @@ if (isset($_POST['submit'])){
 	}	
 }
 ?>
+<!--The bulk of the HTML Page itself-->
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -44,12 +52,13 @@ if (isset($_POST['submit'])){
 <title>Register Tenant</title>
 </head>
 <body>
+<!--Top Nav is the menu bar at the top-->
 <?php include('/includes/content/topNav.php'); ?>
 <div class="page-header">
 	<h1>Register</h1> <!-- We could use the name variable as this title -->
 </div>
 <div class="col-xs-offset-2"><div class="col-sm-9">
-	<div class="panel panel-primary">
+	<div class="panel panel-primary"><!--Extra divs are for bootstrap-->
 		<div class="panel-heading">
 			<h3 class="panel-title">Profile</h3>
 		</div>
@@ -59,12 +68,13 @@ if (isset($_POST['submit'])){
 <table class="table">
 
 	<tbody>
-	
+<!--Use formControls library to construct the form-->
 <tr><td>Your Email</td><td><?php ctrl_input_field($errors,'text','REQUIRED','email','','txtEmail',$tenantDetails['email']);?></td></tr>
 <tr><td>New Password</td><td><?php ctrl_input_field($errors, 'text','REQUIRED','password','','txtPassword',$tenantDetails['password']); ?></td></tr>
 <tr><td>First Name</td><td><?php ctrl_input_field($errors,'text','REQUIRED','firstName','','txtFirstName',$tenantDetails['firstName']); ?></td></tr>
 <tr><td>Last Name</td><td><?php ctrl_input_field($errors,'text','OPTIONAL','lastName','','txtLastName',$tenantDetails['lastName']); ?></td></tr>
 <tr><td>Date of Birth</td><td><?php ctrl_input_field($errors,'date','OPTIONAL','DOB','','dtpDOB',$tenantDetails['DOB']);	?></td></tr>
+<!--setup the possible values for gender. IsMale checkbox is not politacally correct-->
 <?php $genderValues = array('male','female');
 $genderLabels = array('Male','Female');?>
 <tr><td><?php ctrl_input_radio($errors,'gender',$genderValues,$genderLabels,'classNameNotImplemented',$selectedGender); ?></td></tr>
