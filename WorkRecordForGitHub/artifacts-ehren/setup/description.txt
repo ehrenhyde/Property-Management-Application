@@ -1,5 +1,0 @@
-I setup the development/deployment platform including
-Registering a free-tier virtual server
-Creating and configuring a website in IIS
-Configuring the amazon server to accept web traffic
-Installing the correct verison of php
