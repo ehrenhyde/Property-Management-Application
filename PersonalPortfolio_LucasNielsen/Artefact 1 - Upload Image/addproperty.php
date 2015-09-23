@@ -83,7 +83,7 @@ if (isset($_POST['submit'])){
 	if (!$errors){
 		
 		// echo "The number of rooms is *". $_POST['description'].'*';
-		db_addProperty(
+		db_addProperty( // refer to functions.php file 
 						$_POST['numOfRooms'],
 						$_POST['numberofBaths'],
 						$_POST['numberOfCarParks'],
