@@ -61,7 +61,7 @@ $loginId = $_SESSION['idLogin'];
 
 			<tr><td>Buying Price</td><td><?php ctrl_input_field($errors,'number','REQUIRED','buyingPrice','','');?></td></tr>
 			
-			<tr><td>Image</td><td><?php ctrl_input_field($errors,'file','REQUIRED','userfile','','');?></td></tr><!-- Included the image input in form-->			
+			<tr><td>Image</td><td><?php ctrl_input_field($errors,'file','REQUIRED','userfile','','');?></td></tr> <!-- Incorporated Image Input -->			
 			
 			 
 
@@ -82,7 +82,8 @@ if (isset($_POST['submit'])){
 	
 	if (!$errors){
 		
-		db_addProperty( //Updated db_addproperty function in db.php
+		// echo "The number of rooms is *". $_POST['description'].'*';
+		db_addProperty(
 						$_POST['numOfRooms'],
 						$_POST['numberofBaths'],
 						$_POST['numberOfCarParks'],
@@ -94,7 +95,7 @@ if (isset($_POST['submit'])){
 						$_POST['suburb'],
 						$_POST['state'],
 						$_POST['postcode'],
-						$_FILES['userfile'] // Included Upload Image POST
+						$_FILES['userfile'] // Incorporated image POST input
 						);
   
   
