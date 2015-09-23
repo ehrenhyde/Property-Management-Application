@@ -1,0 +1,122 @@
+<?php
+
+/*This file creates a bunch of functions which can be called to echo out the required html for a series of form elements*/
+
+/*Makes a general input field, such as text,checkbox, or number*/
+function ctrl_input_field($errors, $inputType,$isRequired,$name, $labelText,$className,$originalValue=null){
+	
+	/*Determine class from paramenter*/
+	$divClassName;
+	if ('REQUIRED' == $isRequired){
+		$divClassName = 'requiredField';
+	}else{
+		$divClassName = 'optionalField';
+	}
+	
+	echo "<div class = '$divClassName'>";
+	
+	/*Use either posted or get'd value, or the placeholder 'originalValue'*/
+	$value;
+	if (sent_value($name)!=null){
+		$value = sent_value($name);
+	}else{
+		$value = $originalValue;
+	}
+	
+	
+	if ('hidden' != $inputType){
+		//checkboxes look better if the box is on the left
+		if ('checkbox' != $inputType){
+			label($name,$labelText);
+			echo "<input type =\"$inputType\" id = \"$name\" name = \"$name\" value = \"$value\" class = \"$className\"/>";
+		}else{
+			echo "<input type =\"$inputType\" id = \"$name\" name = \"$name\" value = \"$value\" class = \"$className\"/>";
+			/*Make the label as well*/
+			label($name,$labelText);
+		}
+		/*and an error label which is useually invisible*/
+		error_label($errors,$name);
+	}else{//hidden fields don't have labels or error labels
+		echo "<input type =\"$inputType\" id = \"$name\" name = \"$name\" value = \"$value\" class = \"$className\"/>";
+	}
+	
+	echo '</div>';
+	
+}
+
+/*Make a more specific select type control*/
+function ctrl_select($errors,$name,$values,$className,$useDisplayAsValue = false){
+	echo "<select id = \"$name\" name = \"$name\">";
+	
+	/*Loop over values to make the select's options*/
+	foreach ($values as $value => $display){
+		if ($useDisplayAsValue){
+			$value = $display;
+		}
+		$selected;
+		if (sent_value($name) == $value){
+			$selected = 'selected = "selected"';
+		}else{
+			$selected = '';
+		}
+		echo "<option $selected value=\"$value\">$display</option>";
+	}
+	echo '</select>';
+	
+	error_label($errors,$name);
+}
+
+/*Makes a radio button set input control set*/
+function ctrl_input_radio($errors,$name,$values,$labels,$className,$defaultValue){
+	//check to see if any field values where posted
+
+	$useDefault = true;
+	$sent_value = sent_value($name);
+	if (isset($sent_value)==true){
+		$useDefault = false;
+	}
+	/*Loop over array of values to select and echo out each button*/
+	for($iV = 0;$iV<count($values);$iV++){
+		$checked;
+		/*Prefer to use a sent value such as from $_POST or $_GET, else use a designated defaultValue*/
+		if(sent_value($name) == $values[$iV] || ($useDefault ==true && $defaultValue == $values[$iV])){
+			$checked = 'checked';
+		}else{
+			$checked = '';
+		}
+		echo "<input id=\"r-{values[$iV]}\" type=\"radio\" name=\"$name\" value=\"$values[$iV]\" $checked>";
+        echo "<label for='r-{values[$iV]}'>$labels[$iV]</label>";
+        echo '<br/>';
+	}
+}
+
+/*Make a submit button*/
+function ctrl_submit($value = 'Submit',$id = 'btnSubmit'){
+	echo "<input id = $id type = 'submit' name = 'submit' value = $value />";
+	echo '<br>';
+}
+
+/*basic label*/
+function label($name,$labelText){
+	echo "<label for=\"$name\">$labelText</label>";
+}
+
+/*make a basic error label*/
+function error_label($errors,$name){
+	if (isset($errors[$name])){
+		echo "<span class = 'error'>$errors[$name]</span>";
+	}
+}
+
+/*Checks both $_POST and $_GET for a variable with a given name and returns it*/
+function sent_value($name){
+	if (isset($_POST[$name])){
+		return htmlspecialchars($_POST[$name]);
+	}elseif(isset($_GET[$name])){
+		return htmlspecialchars($_GET[$name]);
+	}else{
+		return null;
+	}
+}
+
+?>
