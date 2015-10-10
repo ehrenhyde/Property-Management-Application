@@ -18,6 +18,7 @@ $carParks = array('0','1','2','3','4','5');
 $rooms = array('0','1','2','3','4','5');
 //may later use login to enforce security one which staff members can edit
 $loginId = $_SESSION['idLogin'];
+$image_type = array("image/gif", "image/jpeg", "image/jpg", "image/png", "image/bmp");
 ?>
 <?php
   include ('/includes/functions/db.php'); 
@@ -61,11 +62,9 @@ $loginId = $_SESSION['idLogin'];
 
 			<tr><td>Buying Price</td><td><?php ctrl_input_field($errors,'number','REQUIRED','buyingPrice','','');?></td></tr>
 			
-			<tr><td>Image</td><td><?php ctrl_input_field($errors,'file','REQUIRED','userfile','','');?></td></tr>			
+			<tr><td>Image 1</td><td><input class="files" name="user_files" type="file" multiple="multiple" ></td><td></td></tr>			
 			
-			 
-
-			<tr><td></td><td><div align="right"><button class="btn btn-sm btn-primary" type="submit" value=" Send" id="submit" >Save</button></div> <br><?php ctrl_submit('Save'); ?></td></tr>
+			<tr><td></td><td><div align="right"><!--<button class="btn btn-sm btn-primary" type="submit" value=" Send" id="submit" >Save</button>--></div> <br><?php ctrl_submit('Save'); ?></td></tr>
 
 		
 		</tbody>
@@ -94,18 +93,27 @@ if (isset($_POST['submit'])){
 						$_POST['description'],
 						$_POST['suburb'],
 						$_POST['state'],
-						$_POST['postcode'],
-						$_FILES['userfile']
+						$_POST['postcode']
 						);
-  
-  
-		header("location: http://{$_SERVER['HTTP_HOST']}/property-Management-application/searchProperties.php");
-		exit();	
+		
+		$results = db_getpropertyId($_POST['numOfRooms'],$_POST['numberofBaths'],$_POST['numberOfCarParks'],$_POST['defaultRent'],$_POST['defaultPeriod'],$_POST['buyingPrice']);
+		
+		
+		if (count($_FILES["user_files"]) > 0) {		
+		
+		for ($i = 0; $i < count($_FILES["user_files"]["name"]) + 1; $i++) {		
+		
+		db_uploadnewimage($results['propertyId'],$_FILES["user_files"]);
+		} 
+		} 
+			
 	}
+	header("location: http://{$_SERVER['HTTP_HOST']}/property-Management-application/searchProperties.php");
+	exit();
 }
 ?>
 	</div>
 	</div>
-</div></div>
+</div></div></div>
 </body>
 </html>

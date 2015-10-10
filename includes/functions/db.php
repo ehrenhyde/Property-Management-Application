@@ -55,6 +55,35 @@ function db_addTenant_temp($confirmCode,$email,$password,$firstName,$lastName,$D
 	}
 }
 
+function db_uploadnewimage($propertyId,$userfile){
+	try{
+		$pdo = db_connect();
+		
+		$size = getimagesize($userfile['tmp_name']);
+		$type = $size['mime'];		
+		$image = fopen($userfile['tmp_name'], 'rb');	
+		
+		
+		$stmt = $pdo->prepare(		
+					'INSERT INTO property_pic(propertyId,image_type,image)VALUES(:propertyId,:image_type,:image);'
+				);
+		/*echo "Type:*".$type."*";
+		echo "Size:*".$size."*";
+		echo "Userfile Temp nname thing*".$_FILES['userfile']['tmp_name']."*";
+		exit();*/
+
+		$stmt->bindValue(':propertyId',$propertyId);		
+		$stmt->bindParam(':image_type', $type);
+		$stmt->bindParam(':image', $image, PDO::PARAM_LOB);
+		
+		$stmt->execute();
+		
+	}catch(PDOException $e){
+		echo 'exception: db_uploadnewimage';
+		echo $e->getMessage();
+	}
+}
+
 function db_addOwner($email,$password,$firstName,$lastName,$DOB,$isMale){
 	try{
 		$pdo = db_connect();
@@ -206,6 +235,59 @@ function db_getTenantDetails_temp($confirmCode){
 	}
 }
 
+function db_getpropertyId($numRooms,$numBath,$numCarParks,$defaultRent,$defaultRentingPeriod,$buyingPrice){
+	$pdo = db_connect();
+	try{
+		
+		
+		$stmt = $pdo->prepare(
+						'select * from v_w_house_property_details where numRooms = :numRooms AND numBath = :numBath AND numCarParks = :numCarParks AND defaultRent = :defaultRent AND defaultRentingPeriod = :defaultRentingPeriod AND buyingPrice = :buyingPrice'
+						//'AND buyingPrice = :buyingPrice'						
+						);
+		
+		$stmt->bindValue(':numRooms',$numRooms);
+		$stmt->bindValue(':numBath',$numBath);
+		$stmt->bindValue(':numCarParks',$numCarParks);
+		$stmt->bindValue(':defaultRent',$defaultRent);
+		$stmt->bindValue(':defaultRentingPeriod',$defaultRentingPeriod);
+		$stmt->bindValue(':buyingPrice',$buyingPrice);
+		
+		$stmt->execute();
+		
+		$resultArray = $stmt->fetch();
+		
+		return $resultArray;
+	}catch(PDOException $e){
+		$e->getMessage(); 
+	}
+}
+
+
+function db_getallimages($propertyId){
+	$pdo = db_connect();
+	try{
+		
+		
+		$stmt = $pdo->prepare(
+						'select * from property_pic '.
+						'where propertyId = :propertyId'
+						);
+		
+		$stmt->bindValue(':propertyId',$propertyId);
+		
+		$stmt->execute();
+		
+		
+		$resultArray = $stmt->fetchAll();
+		//$resultArray = array_splice($resultArray,0,1);
+		$count=$stmt->rowCount();
+		
+		return array($resultArray,$count);
+	}catch(PDOException $e){
+		$e->getMessage(); 
+	}
+}
+
 function db_getOwnerDetails($loginId){
 	$pdo = db_connect();
 	try{
@@ -279,7 +361,6 @@ function db_search_w_house($address,$minRooms,$maxRooms, $minPrice, $maxPrice){
 		$e->getMessage(); 
 	}
 }
-
 // Creating a function to connect to the database and bind the values
 
 function db_search_s_house($address,$minRooms,$maxRooms){
@@ -342,6 +423,29 @@ function db_getSHouseDetails($sHouseId){
 	$resultArray = $stmt->fetch();
 		
 	return $resultArray;
+	
+}
+
+function db_getRooms($sHouseId){
+	try{
+		$pdo= db_connect();
+		$stmt = $pdo->prepare(
+							'select * from v_rooms '.
+							'where sHouseId = :sHouseId'
+							);
+			
+		$stmt->bindValue(':sHouseId',$sHouseId);
+			
+		$stmt->execute();
+			
+		$resultArray = $stmt->fetchall();
+			
+		return $resultArray;
+	}catch(PDOException $e){
+		$e->getMessage();
+		exit();
+	}
+	
 	
 }
 
@@ -481,16 +585,16 @@ function db_getPropertyPic($loginId){
 }
 
 
-function db_addProperty($numOfRooms,$numberofBaths,$numberofcarParks,$defaultRent,$defaultPeriod,$buyingPrice,$address,$description,$suburb,$state,$postcode,$userfile){
+function db_addProperty($numOfRooms,$numberofBaths,$numberofcarParks,$defaultRent,$defaultPeriod,$buyingPrice,$address,$description,$suburb,$state,$postcode){
 	try{
 		$pdo = db_connect();
 		
-		$size = getimagesize($userfile['tmp_name']);
-		$type = $size['mime'];
-		$image = fopen($userfile['tmp_name'], 'rb');
+		//$size = getimagesize($userfile['tmp_name']);
+		//$type = $size['mime'];
+		//$image = fopen($userfile['tmp_name'], 'rb');
 		
 		$stmt = $pdo->prepare(		
-					'call add_property(:numOfRooms,:numberofBaths,:numberofcarParks,:defaultRent,:defaultPeriod,:buyingPrice,:address,:description,:suburb,:state,:postcode,:image_type,:image);'
+					'call add_property(:numOfRooms,:numberofBaths,:numberofcarParks,:defaultRent,:defaultPeriod,:buyingPrice,:address,:description,:suburb,:state,:postcode);'
 				);
 		/*echo "Type:*".$type."*";
 		echo "Size:*".$size."*";
@@ -507,11 +611,11 @@ function db_addProperty($numOfRooms,$numberofBaths,$numberofcarParks,$defaultRen
 		$stmt->bindValue(':description',$description);
 		$stmt->bindValue(':suburb',$suburb);
 		$stmt->bindValue(':state',$state);
-		$stmt->bindValue(':postcode',$postcode);
-		$stmt->bindParam(':image_type', $type);
-		$stmt->bindParam(':image', $image, PDO::PARAM_LOB);
+		$stmt->bindValue(':postcode',$postcode);		
 		
 		$stmt->execute();
+		
+
 		
 	}catch(PDOException $e){
 		echo 'exception: db_addProperty';
