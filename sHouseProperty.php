@@ -7,14 +7,13 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link href="css/bootstrap-theme.min.css" rel="stylesheet">
-	
-	
 	<link href="css/theme.css" rel="stylesheet">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyArPro5ZN3HT4uc8U6C1Grjv4YB6wGmuLc&sensor=false"></script>
 <script type="text/javascript" src="js/map.js"></script>
-  <style type= "text/css">
+	<title>Property Data</title>
+	<style type= "text/css">
  .carousel-inner > .item > img,
   .carousel-inner > .item > a > img {
       width: 70%;
@@ -25,43 +24,19 @@
 		margin: 0 auto 0 auto; 
 	}
   </style>
-	<title>Property Data</title>
-	<!---<link rel='stylesheet' href = 'css/page.css' type = 'text/css'/>-->
+	<link rel='stylesheet' href = 'css/page.css' type = 'text/css'/>
 </head>
 
 <body onload="GeneralMap()">
 <div class="page-header">
 	<h1>Property View</h1>
 </div>
-
 <?php
+
 	include('includes/accountSessions.php');
 	include('includes/functions/db.php');
-	include('includes/content/topNav.php');
-	include ('includes/functions/formControls.php');
-
-	$id=$_GET["propertyId"];
-
-
-	$result = db_getWHouseDetails($id);
-
-	//check to see if date has passed or not
-	if( strtotime($result['dateAvailable']) < strtotime('now') ) {
-		$result['dateAvailable'] = 'Available Now!';
-	}
-	if( strtotime($result['dateInspection']) < strtotime('now') ) {
-		$result['dateInspection'] = 'N/A';
-	}
+	include('includes/content/topNav.php');	
 	
-	$propOwner = $result['ownerId'];
-	$resultOwner = db_getPropertyOwner($propOwner);
-	
-	list($result2,$count)= db_getallimages($id);
-    echo '<div id=content>';
-		
-		
-		
-		?><?php
 if(!$_SESSION){
 		echo 'You are not logged in.!';
 		?>
@@ -83,14 +58,29 @@ if(!$_SESSION){
 			<?php
 		exit();
 	}		
-	?><div class="col-xs-offset-2"><div class="col-sm-9">
-		<div class="panel panel-primary">
-				<div class="panel-heading"><h3 class="panel-title"><?php echo ''.$result['address'].'';?></h3></div>
-				<div class="panel-body">
-				
-				<form class= 'editForm' enctype="multipart/form-data" action = "<?php echo "wHouseProperty.php?propertyId=$id"?>" method = "POST" name = "WHouse">
-				<div class="container">
-  <br>
+	?>	
+	<?php
+	$sHouseId=(isset($_GET["sHouseId"])) ? (int)$_GET["sHouseId"] : 1;
+
+
+	$result = db_getSHouseDetails($sHouseId);
+
+	//check to see if date has passed or not
+	if( strtotime($result['dateAvailable']) < strtotime('now') ) {
+		$result['dateAvailable'] = 'Available Now!';
+	}
+	
+	$propOwner = $result['ownerId'];
+	$resultOwner = db_getPropertyOwner($propOwner);
+	list($result2,$count)= db_getallimages($sHouseId);
+			
+    echo '<div id=content>';
+		
+		
+		
+		echo '<div id=Address>'.$result["address"].'</div>';
+		?>
+		<br>
   <div class="col-sm-8">
   <div id="myCarousel" class="carousel slide" data-ride="carousel">
     <!-- Indicators -->
@@ -131,29 +121,62 @@ if(!$_SESSION){
   </div>
 </div>
 <br>
-				<table class="table"><?php
+		<!--<div id='Picture'><img style="width: 100%; height: 100%" src="data:image/jpeg;base64,<?php echo base64_encode( $result["image"] ); ?>" /></div>-->
+		<?php
 		
-				echo '<tr><td>Number of rooms:'. $result['numRooms'].'</td><td>Suburb:'. $result['suburb'].'</td>';
-				echo '<tr><td>Number of carparks:'. $result['numCarParks'].'</td><td>State:'. $result['state'].' '.$result['postcode'].'</td>';
-				echo '<tr><td>Number of bathrooms:'. $result['numBath'].'</td><td>Buying Price: $'. $result['buyingPrice'].'</td></tr>';
-				echo '<td>Available on: '. $result['dateAvailable'] .'</td><td>Inspection on: '. $result['dateInspection'] .'</td>';
-				echo '<tr><td>Owner: '. $resultOwner['firstName']. ' ' . $resultOwner['lastName'] .'</td><td>'. $resultOwner['email'].'</td></tr>';
-				
-				if($propOwner == $ownerId[0]){
-					echo "<td><a href='updateWHouse.php?propertyId=".$result['propertyId']."'>Edit</a></td>";
-				}
-				?>
-				
-				<!--<td>Add Another Image<?php ctrl_input_field($errors,'file','REQUIRED','userfile1','','');?><?php ctrl_submit('Upload Image'); ?></td></tr>-->
-				<?php echo "<tr><td><div class=\"linediv\"></div></td></tr></table>";
-				
-				//if(isset($_POST['submit'])){		
-				//	db_uploadnewimage($id,$_FILES['userfile1']);				
-				//}			
-		?>
-	</form><div id="MapArea" style="align:center;width:600px;height:400px;"></div></div></div></div></div>
+		echo '<div id=RoomNum>Number of rooms: '. $result["roomCount"].'</div>';
+		
+		echo '<div id=maxOvernightGuests>Maximum Overnight Guests Allowed: '. $result["maxOvernightGuests"].'</div>';
+		
+		echo '<div id=suburb>Suburb: '. $result["suburb"].'</div>';
+		
+		echo '<div id=state>State: '. $result["state"].'</div>';
+		
+		echo '<div id=postcode>Post Code: '. $result["postcode"].'</div>';
+		
+		echo '<div id=numCarParks>Number of Car Parks: '. $result["numCarParks"].'</div>';
+		
+		echo '<div id=numBath>Number of Bathrooms: '. $result["numBath"].'</div>';
+		
+		echo '<div id=Description>Description: '.$result["description"].'</div>';
+		
+		echo '<div id=Availability>Available on: '.$result['dateAvailable'].'</div>';
+		
+		echo '<div id=ownerDetails>Owner: '.$resultOwner['firstName'].' ' . $resultOwner['lastName'] . ': '.$resultOwner['email'].'</div>';
+		
+		//if($propOwner == $ownerId[0]){
+		echo "<td><a href='updateSHouse.php?propertyId=".$result['propertyId']."'>Edit</a></td>";
+		//}
+		
+	echo '</div>';
+	?>
 	
-	
+	<div id="MapArea" style="align:center;width:600px;height:400px;"></div>
+	<ul id="roomsList">
+	<?php
+		$rooms = db_getRooms($sHouseId);
+		foreach ($rooms as $room){
+			
+			?><div class="col-xs-offset-2"><div class="col-sm-9">
+					<div class="panel panel-primary">
+					<div class="panel-heading"><h3 class="panel-title"><?php echo 'Room Number: '.$room['roomNum'].'';?></h3></div>
+					<div class="panel-body">
+					<table class="table">
+						<?php
+					
+						echo '<tr><td>Default Rent:'. $room['defaultRent'].'</td>';
+						echo '<tr><td>Default Period:'. $room['defaultPeriod'].'</td>';
+						echo "<tr><td><div class=\"linediv\"></div></td></tr>";
+					?>
+					</table></div></div>
+					
+					</div></div>
+					<?php 
+		}
+	?>
+	</ul>
+
+
+
 </body>
 </html>
-
