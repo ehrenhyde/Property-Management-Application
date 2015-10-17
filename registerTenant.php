@@ -5,7 +5,8 @@ include ('includes/functions/db.php');
 include ('includes/functions/formControls.php');
 /*Utilse the user's login sesion*/
 include ('includes/accountSessions.php');
-
+/*enable mail*/
+include ('includes/functions/mail.php');
 $errors = array();
 
 /*Only try to insert if the page is being posted to*/
@@ -32,52 +33,18 @@ if (isset($_POST['submit'])){
 		}
 		
 		$confirmCode=md5(uniqid(rand())); 
+		
 		/*insert into the db*/
-		db_addTenant_temp($confirmCode,$_POST['email'],$_POST['password'],$_POST['firstName'],$_POST['lastName'],$_POST['DOB'],$isMale);		
+	
 		
-		// Your message
-		$message="Hi ". $_POST['firstName']." <p>\n";
-		$message.="<br>Welcome to the Property Management Application (SPEL) Community <br>\n";
-		$message.="<br>To Activate your Account, Click on the link below: <br>\n";
-		$message.="http://52.26.240.26/property-management-application/confirmation.php?confirmCode=$confirmCode<br>";
-		$message.="<br>From the SPEL Management Team";
-		$mail = new PHPMailer();  
+					
+		db_addTenant_temp($confirmCode,$_POST['email'],$_POST['password'],$_POST['firstName'],$_POST['lastName'],$_POST['DOB'],$isMale,$_FILES["user_files"]);		
 		
 		
-     
-		$mail->IsSMTP();   
-		$mail->IsHTML(); 
-		$mail->SMTPAuth = true;       
-		$mail->SMTPDebug = 2;  
-		$mail->SMTPSecure = "ssl";       
-		$mail->Host = "smtp.gmail.com";  
-		$mail->Port = 465;  
-	  
 		
+		mail_send_registration_code($confirmCode,$_POST['email'],$_POST['fullname'],$_POST['firstName'],0);
 		
-		$mail->Username   = "lucas.nielsen459@gmail.com"; 
-		$mail->Password   = "F22Raptor"; 
-		  
-	   
-		$mail->From='lucas.nielsen459@gmail.com';
-		$mail->FromName='SPEL Management';
-		$mail->AddReplyTo("lucas.nielsen459@gmail.com", $_POST['fullname']);
-		$mail->Subject = "Activate Your Account to SPEL";        
-		$mail->MsgHTML($message);
-	 
-	   
-		$mail->AddAddress($_POST['email'],$_POST['firstName']); 
-		if($mail->Send()){
-			echo 'Your Confirmation has been sent!';
-			
-		}else {
-			echo'Email Not sent! Please Try again';
-			
-		};	// Send!  
-			
-		
-		
-		header("location: http://{$_SERVER['HTTP_HOST']}/property-Management-application/searchProperties.php");
+		header("location: http://{$_SERVER['HTTP_HOST']}");
 		exit();	
 	}	
 }
@@ -96,7 +63,7 @@ if (isset($_POST['submit'])){
 </head>
 <body>
 <!--Top Nav is the menu bar at the top-->
-<?php include('/includes/content/topNav.php'); ?>
+<?php ?>
 <div class="page-header">
 	<h1>Register</h1> <!-- We could use the name variable as this title -->
 </div>
@@ -106,12 +73,38 @@ if (isset($_POST['submit'])){
 			<h3 class="panel-title">Profile</h3>
 		</div>
 	<div class="panel-body">
-<?php include('/includes/content/topNav.php'); ?>
-<form class= 'regForm' action = "registerTenant.php" method = "POST" name = "registerTenantAccount">
+<?php include('includes/content/topNav.php'); ?>
+
+<?php
+if($_SESSION){
+	echo 'You are logged in. Please log out to register a new account!';
+?>
+		<p>You will be redirected to the home page in <span id="counter">5</span> second(s).</p>
+	<script type="text/javascript">
+		function countdown() {
+		
+		var i = document.getElementById('counter');
+			
+		if (parseInt(i.innerHTML)<=1) {
+			location.href = 'homePage.php';
+		}
+		
+		i.innerHTML = parseInt(i.innerHTML)-1;
+		}
+		setInterval(function(){ countdown(); },1000);
+	</script>
+	
+<?php
+		exit();
+	}	
+?>
+
+<form class= 'regForm' enctype="multipart/form-data" action = "registerTenant.php" method = "POST" name = "registerTenantAccount">
 <table class="table">
 
 	<tbody>
 <!--Use formControls library to construct the form-->
+<tr><td>Profile Picture</td><td><input type="file" name="user_files" id="user_files"></td></tr>
 <tr><td>Your Email</td><td><?php ctrl_input_field($errors,'text','REQUIRED','email','','txtEmail',$tenantDetails['email']);?></td></tr>
 <tr><td>New Password</td><td><?php ctrl_input_field($errors, 'text','REQUIRED','password','','txtPassword',$tenantDetails['password']); ?></td></tr>
 <tr><td>First Name</td><td><?php ctrl_input_field($errors,'text','REQUIRED','firstName','','txtFirstName',$tenantDetails['firstName']); ?></td></tr>
