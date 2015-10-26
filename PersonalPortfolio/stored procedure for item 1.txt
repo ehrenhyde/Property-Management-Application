@@ -1,0 +1,15 @@
+CREATE DEFINER=`root`@`localhost` PROCEDURE `search_w_house`(in pAddressSearchVal varchar(500),in pSuburbSearchVal varchar(500),in pMinRooms int,in pMaxRooms int,in pMinBath int,in pMaxBath int,in pMinCarPark int,in pMaxCarPark int, in pMinPrice int, in pMaxPrice int,in pOffset int,in pRowsPerPage int)
+BEGIN
+	select * from v_w_house_property_details 
+	where address like pAddressSearchVal
+	AND suburb like pSuburbSearchVal
+	AND numRooms >= COALESCE(pMinRooms,0) 
+	AND numRooms <= COALESCE(pMaxRooms,9999999999) 
+	AND numBath >= COALESCE(pMinBath,0) 
+	AND numBath <= COALESCE(pMaxBath,9999999999) 
+	AND numCarParks >= COALESCE(pMinCarPark,0) 
+	AND numCarParks <= COALESCE(pMaxCarPark,9999999999) 
+	AND buyingPrice >= COALESCE(pMinPrice,0) 
+	AND buyingPrice <= COALESCE(pMaxPrice,999999999999999) 
+	LIMIT pOffset, pRowsPerPage;
+END
