@@ -1,0 +1,154 @@
+/*********
+
+This is my favourite artifact this sprint. 
+
+I made a checkbox allows users to favourite and unfavourite a property.
+Because the user does not expect to have to submit a form to tag a favourite property I used AJAX.
+
+I also had some fun in the db, setting the foundation so that another member could easily search by favourited properties
+
+I also then later took the exiting styling of the checkbox and adjusted it with css (bootstrap) to better fit the layout.
+
+Later I made two new pages that list out the currently logged in user's favourite whole houses and share houses. I didn't include that code because it's standard boring stuff.
+
+******/
+
+
+/****
+Thanks to jQuery the AJAX was quite easy
+****/
+<script>
+function sendFavouriteStatus(loginId,propertyId,isFavourite){
+	console.log('sending favourite status');
+	if (!loginId){
+		console.log('no login id');
+		return;
+	}
+	$.ajax({
+		method: "POST",
+		url: "webservices/updateFavouriteStatus.php",
+		data: {
+			loginId:loginId,
+			propertyId:propertyId,
+			isFavourite:isFavourite
+		}
+	}).done(function( msg ) {
+		console.log('successful ajax to updateFavouriteStatus.php');
+	})
+	.fail(function(jqXHR,textStatus) {
+		console.log('ajax failed');
+		console.log(textStatus);
+	});
+}
+$(document).ready(function(){
+	console.log('document ready');
+	$('#chkIsFavourite').change(function(){
+		console.log('found check event');
+		if($(this).is(':checked')) {
+			console.log('check');
+			/*write out custom paramters for the function call, based on php variables*/
+			/*In this case, the user's loginIn and the id of the property being viewed*/
+			sendFavouriteStatus(<?php if (isset($_SESSION['idLogin'])){echo $_SESSION['idLogin'];}else{echo 'null';} ?>,<?php echo $_GET["propertyId"] ?>,1);
+		} else {
+			console.log('uncheck');
+			sendFavouriteStatus(<?php if (isset($_SESSION['idLogin'])){echo $_SESSION['idLogin'];}else{echo 'null';} ?>,<?php echo $_GET["propertyId"] ?>,0);
+		}
+	});
+});
+</script>
+
+/*****
+I made a very simple webservice in php for the ajax to call
+*****/
+<?php
+
+include('../includes/functions/db.php');
+
+$loginId = $_POST['loginId'];
+$propertyId = $_POST['propertyId'];
+$isFavourite = $_POST['isFavourite'];
+
+db_updateFavouriteStatus($loginId,$propertyId,$isFavourite);
+
+?>
+
+
+/******
+Down on the db layer the favourites are stored as whether or not a corresponding row exists in the table login_favourite (login's have favourites)
+******/
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_favourite_status`(in pLoginId int,in pPropertyId int,in pFavouriteStatus int)
+BEGIN
+
+/*If changing to 'yes' favourited*/
+IF pFavouriteStatus = 1 THEN
+	BEGIN
+		/*If it's not already favourited*/
+		IF (exists(select * from login_favourite where loginId = pLoginId and propertyId = pPropertyId)=0) THEN
+			BEGIN
+				/*Make an entry to mark the property being a favourite for that login*/
+				insert into login_favourite(loginId,propertyId)
+                values(pLoginId,pPropertyId);
+			END;
+		END IF;
+	END;
+/*Else if saying 'no' to isFavourite simply delete that (all) assocaited rows*/
+ELSE 
+	BEGIN
+		DELETE FROM login_favourite
+        where loginId = pLoginId
+        and propertyId = pPropertyId;
+    END;
+END IF;
+
+END
+
+/******
+The login_favourite table I created looks kinda like
+
+ID || loginID || propertyId
+
+******/
+
+/******
+
+Here's some bootstrap class adjustments I made to show the favourite start in a better place
+
+*****/
+
+
+<div class="panel-heading clearfix">
+	<h3 class="panel-title pull-left"><?php echo ''.$result['address'].'';?></h3>
+	<div class='pull-right'>
+		<!---Input and label go here-->
+		
+		
+		
+/******
+
+I also made some adjustments to the checkbox css to make the favourite section smaller etc
+None edited lines removed with ...
+
+Part of this work was making a smaller scale image using an online png shrinking tool
+
+****/
+
+input[type=checkbox].css-checkbox + label.css-label {
+	padding-left:25px;
+	height:20px; 
+	....
+	line-height:20px;
+	...
+	font-size:15px;
+	...
+
+}
+
+input[type=checkbox].css-checkbox:checked + label.css-label {
+	background-position: 0 -20px;
+}
+label.css-label {
+	background-image:url("../images/csscheckbox_20x40.png");
+	....
+}
+			
+			

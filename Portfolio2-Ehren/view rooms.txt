@@ -1,0 +1,72 @@
+/*********
+
+Viewing rooms was not that interesting for me, but I did learnt a bit about bootstrap since 
+I used it to frame the list of rooms which was shown under the property details
+
+*********/
+
+<?php
+	$rooms = db_getRooms($sHouseId);
+	foreach ($rooms as $room){
+		
+		?>
+				<div class="panel panel-primary" align="center">
+					<div class="panel-heading">
+						<h3 class="panel-title"><?php echo 'Room Number: '.$room['roomNum'].'';?></h3>
+					</div>
+					<div class="panel-body">
+						<table class="table">
+							<?php
+						
+							echo '<tr><td>Default Rent:'. $room['defaultRent'].'</td>';
+							echo '<tr><td>Default Period:'. $room['defaultPeriod'].'</td>';
+							echo "<tr><td><div class=\"linediv\"></div></td></tr>";
+						?>
+						</table>
+					</div>
+				</div>
+				
+				<?php 
+	}
+?>
+	
+<?php
+
+function db_getRooms($sHouseId){
+	try{
+		$pdo= db_connect();
+		$stmt = $pdo->prepare(
+							'select * from v_rooms '.
+							'where sHouseId = :sHouseId'
+							);
+			
+		$stmt->bindValue(':sHouseId',$sHouseId);
+			
+		$stmt->execute();
+			
+		$resultArray = $stmt->fetchall();
+			
+		return $resultArray;
+	}catch(PDOException $e){
+		$e->getMessage();
+		exit();
+	}	
+}
+
+?>
+
+
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `v_rooms` AS
+    SELECT 
+        `r`.`roomId` AS `roomId`,
+        `r`.`roomNum` AS `roomNum`,
+        `r`.`defaultRent` AS `defaultRent`,
+        `r`.`defaultPeriod` AS `defaultPeriod`,
+        `sh`.`sHouseId` AS `sHouseId`
+    FROM
+        (`room` `r`
+        JOIN `s_house` `sh` ON ((`sh`.`sHouseId` = `r`.`sHouseId`)))

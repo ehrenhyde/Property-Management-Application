@@ -1,0 +1,16 @@
+/******
+
+I moved the files around in the file directory so that the website was no longer accessed at 52.26.240.26/property-management-system/example.php
+but rather 52.26.240.26
+
+Whilst doing this I had to trawl through the code and change every absoulte reference to the file directory such as URL redirects to use the new URL.
+
+This was a lesson in using proper global variables such as $_URL so that it only needs to be changed once. I'll do that in the next project.
+
+I also tweaked IIS so that it would default to homePage.php which somebody had created as opposed to looking for index.html
+
+
+*******/
+
+
+

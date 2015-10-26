@@ -1,0 +1,91 @@
+/***
+
+When making the passwords salted and hashed, I worked primarily on the php db_functions and SQL layers.
+
+Thanks to our mostly organised architecture there was minimal points to edit.
+
+Here you can see that I am creating a hash of the password before it is saved, using the salt I pass down from php*/
+
+***/
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `create_owner_login_details`(in email varchar(50), in password varchar(25), in salt varchar(25), in firstName varchar(25), in lastName varchar(25), in DOB date, in isMale tinyint(2), in image longblob, in image_type varchar(45))
+BEGIN
+
+start transaction;
+
+SET @hashed = SHA2(concat(password,salt),512);
+
+insert into login(loginId,email,password,salt)
+values(NULL,email,@hashed,salt);
+
+Set @loginId = last_insert_id();
+
+insert into owners(ownerId,firstName,lastName,loginId,DOB,isMale,image,image_type)
+values(NULL,firstName,lastName,@loginId,DOB,isMale,image,image_type);
+
+commit;
+
+END
+
+/*****
+
+Here's an example PHP funciton (abridged) which got edited. Here I'm generating the salt, which is then saved in the database along with the details
+
+****/
+
+<?php 
+
+function db_addTenant($email,$password,$firstName,$lastName,$DOB,$isMale,$image,$image_type){
+	try{
+		...
+		
+		$salt = str_pad((string) rand(1, 1000), 4, '0', STR_PAD_LEFT);
+		
+		...
+		$stmt->bindValue(':salt',$salt);
+		....
+		
+	}catch(PDOException $e){
+		...
+	}
+}
+
+?>
+
+/******
+
+and here's some more edited functions which need to SHA2 when working with the password
+
+******/
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_password`(in pLoginId int, in pPassword varchar(25))
+BEGIN
+	
+   
+    
+	SET @salt = (select salt from login where loginId = pLoginId);
+    
+   
+    
+	UPDATE login
+    SET password = SHA2(   concat(pPassword,   @salt   ) ,512)
+    where loginId = pLoginId;
+END
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `isValidCred`(pEmail VARCHAR(45), pPassword VARCHAR(45)) RETURNS int(11)
+BEGIN
+
+
+SET @salt = (select salt from login where email = pEmail);
+
+
+SET @saltedPWord = CONCAT(pPassword,@salt);
+
+ return (
+				SELECT count(*) > 0 as isValid
+				FROM Login
+				WHERE email = pEmail
+				AND password = SHA2(@saltedPWord,512)
+               
+				);
+END
