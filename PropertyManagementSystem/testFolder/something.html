@@ -1,0 +1,41 @@
+<html>
+<head>
+<title>Property Management</title>
+</head>
+<body>
+<form action="index.php" method="POST">
+	<input type="file" name="image"><input type="submit" name="submit" value="Upload">
+</form>
+<?php
+if(isset($_POST['submit']))
+	mysql_connect("127.0.0.1","admin","admin");
+	mysql_select_db("world");
+	
+	$imageName = mysql_real_escape_string($_FILES["image"]["name"]);
+	$imageData = mysql_real_escape_string(file_get_contents($_FILES["image"]["tmp_name"]));
+	$imageType = mysql_real_escape_string($_FILES["image"]["type"]);
+	
+	if(substr($imageType,0,5)=="image"){
+	
+	mysql_query("INSERT INTO 'propertypic' VALUES('','$imageName','$imageData')");
+	echo "Image Load";
+	
+	
+	} 
+	else
+	{
+	
+	echo "Image Not loaded";
+	
+	}
+
+)
+
+
+
+
+
+
+?>
+</body>
+</html>

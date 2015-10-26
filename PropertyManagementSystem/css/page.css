@@ -1,0 +1,50 @@
+a{
+	text-decoration: none;
+}
+
+#content{
+	width: 804px;
+	margin-left: auto;
+	margin-right: auto;
+	padding-top: 40px;
+}
+
+#Address{
+	width: 350px;
+	float: center;
+	font-size: 50px;
+	font-weight:bold;
+	height: 250px;
+	padding-bottom: 50px;
+	text-align: center;
+}
+
+#Picture{
+	width: 450px;
+	height:400px;
+	background: #f8f8f8;
+	float:right;
+	/*padding: 90px 0px 90px 0px;*/
+	font-size: 90px;
+	text-align: center;
+	border: 2px solid black;
+	box-shadow: 0 5px 0 #f7f7f7, 0 -1px #fff inset;
+	
+}
+
+#RoomNum{
+	font-size: 30px;
+	padding-bottom: 20px;
+	text-align: center;
+}
+
+#Price{
+	font-size: 40px;
+	text-align: center;
+}
+
+#Description{
+	clear: both;
+	padding: 20px 60px 20px 60px;
+	font-size: 20px;
+}
