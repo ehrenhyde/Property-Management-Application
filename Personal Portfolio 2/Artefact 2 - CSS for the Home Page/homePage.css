@@ -1,0 +1,61 @@
+.page-header { 
+  background: url("Buy-Investment-Property-Qld-Bilinga.jpg") no-repeat center center fixed; 
+  margin-top:-40px;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  height:930px;
+  -webkit-filter: drop-shadow(16px 16px 10px rgba(0,0,0,0.9));
+  filter: drop-shadow(16px 16px 10px rgba(0,0,0,0.9)); 
+  }
+
+  .outer {
+    display: table;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+.middle {
+    display: table-cell;
+    vertical-align: middle;
+}
+  .content{
+  filter: false;
+  -webkit-filter: false;  
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 6px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
+  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+  vertical-align: middle;
+  margin-left: auto;
+  margin-right: auto;
+  width: 600px;
+  z-index: 2;
+  padding: 0 10px;
+  font-size:90px;
+  color:#212121;
+  }
+.contentsubheading{
+  filter: false;
+  -webkit-filter: false;  
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 6px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
+  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+  top: 70%;
+  margin-left: auto;
+  margin-right: auto;
+  vertical-align: middle;
+  width: 400px;
+  z-index: 2;
+  padding: 0 10px;
+  font-weight: bold;
+  font-size:30px;
+  color:#212121;
+  }  
+  * {
+  box-sizing: border-box;
+}
+
